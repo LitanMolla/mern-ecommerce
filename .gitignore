@@ -1,0 +1,54 @@
+# ==========================================
+# Dependencies
+# ==========================================
+node_modules/
+/jspm_packages/
+/bower_components/
+
+# ==========================================
+# Production Builds & Outputs
+# ==========================================
+dist/
+build/
+out/
+.next/
+*.tsbuildinfo
+
+# ==========================================
+# Environment Variables & Secrets (CRITICAL)
+# ==========================================
+
+
+# ==========================================
+# Logs and Debugging
+# ==========================================
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ==========================================
+# Testing & Coverage reports
+# ==========================================
+coverage/
+.nyc_output/
+
+# ==========================================
+# IDEs and Text Editors
+# ==========================================
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ==========================================
+# System Files
+# ==========================================
+.DS_Store
+Thumbs.db
