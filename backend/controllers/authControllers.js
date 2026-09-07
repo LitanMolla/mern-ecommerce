@@ -1,0 +1,42 @@
+const bcrypt = require('bcrypt')
+const User = require('../models/userModel');
+const sendEmail = require('../utils/sendEmail');
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
+const jwt = require('jsonwebtoken')
+const registerController = async (req, res) => {
+    try {
+        const { email, password, confrimPassword, terms, fullName } = req.body
+        if (!email || !password || !terms) {
+            return res.status(400).json({ success: false, message: 'Please fill in all required fields.' })
+        }
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ success: false, message: 'Please provide a valid email address.' })
+        }
+        if (password.length < 8) {
+            return res.status(400).json({ success: false, message: 'Password must be at least 8 characters long.' })
+        }
+        if (!passwordRegex.test(passwordRegex)) {
+            return res.status(400).json({ success: false, message: 'Password must contain at least one letter and one number.' })
+        }
+        if (password !== confrimPassword) {
+            return res.status(400).json({ success: false, message: 'Passwords do not match.' })
+        }
+
+        const hashPassword = bcrypt.hashSync(password, 10)
+
+        const user = new User({ email, terms, fullName, password: hashPassword })
+        await user.save()
+
+        const token = jwt.sign({ _id: user._id, fullName: user.fullName, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' })
+
+        sendEmail(email, token)
+
+        return res.status(201).json({ success: true, message: 'Register success.', data: user })
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message })
+    }
+}
+
+
+module.exports = { registerController }
