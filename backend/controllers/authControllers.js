@@ -32,11 +32,30 @@ const registerController = async (req, res) => {
 
         sendEmail(email, token)
 
-        return res.status(201).json({ success: true, message: 'Register success.', data: user })
+        return res.status(201).json({ success: true, message: 'Register success.' })
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message })
     }
 }
 
+const loginController = async (req, res) => {
+    try {
+        const { email, password } = req.body
+        if (!email || !password) {
+            return res.status(400).json({ success: false, message: 'Please fill in all required fields.' })
+        }
+        const user = await User.findOne({ email })
+        if (!user) {
+            return res.status(400).json({ success: false, message: 'Invalid Credential.' })
+        }
+        const passwordVerify = await bcrypt.compare(password, user.password)
+        if (!passwordVerify) {
+            return res.status(400).json({ success: false, message: 'Invalid Credential.' })
+        }
+        return res.status(200).json({ success: true, message: 'Login success.', data: user })
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message })
+    }
+}
 
-module.exports = { registerController }
+module.exports = { registerController, loginController }
