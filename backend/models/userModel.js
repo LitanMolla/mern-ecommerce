@@ -19,16 +19,16 @@ const userSchema = new Schema({
         required: true
     },
     role: {
-        type: [String],
+        type: String,
         enum: ['user', 'admin'],
         default: 'user'
     },
     status: {
-        type: [String],
+        type: String,
         enum: ['active', 'suspended'],
         default: 'active'
     },
-    isVerified: {
+    isVerifed: {
         type: Boolean,
         default: false
     }

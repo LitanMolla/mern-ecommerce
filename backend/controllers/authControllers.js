@@ -58,4 +58,26 @@ const loginController = async (req, res) => {
     }
 }
 
-module.exports = { registerController, loginController }
+const verifyAccountController = async (req, res) => {
+    try {
+        const { token } = req.params
+        if (!token) {
+            return res.status(400).json({ success: false, message: 'Please send token.' })
+        }
+        const decode = jwt.verify(token, process.env.JWT_SECRET)
+        if (!decode) {
+            return res.status(400).json({ success: false, message: 'Invalid token.' })
+        }
+        const user = await User.findById(decode._id)
+        if (user.isVerifed) {
+            return res.status(400).json({ success: false, message: 'Account already verifed.' })
+        }
+        user.isVerifed = true
+        await user.save()
+        return res.status(200).json({ success: true, message: 'Account verify success.', data: user })
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message })
+    }
+}
+
+module.exports = { registerController, loginController, verifyAccountController }
