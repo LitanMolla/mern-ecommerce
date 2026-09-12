@@ -16,7 +16,7 @@ const registerController = async (req, res) => {
         if (password.length < 8) {
             return res.status(400).json({ success: false, message: 'Password must be at least 8 characters long.' })
         }
-        if (!passwordRegex.test(passwordRegex)) {
+        if (!passwordRegex.test(password)) {
             return res.status(400).json({ success: false, message: 'Password must contain at least one letter and one number.' })
         }
         if (password !== confrimPassword) {
@@ -52,7 +52,7 @@ const loginController = async (req, res) => {
         if (!passwordVerify) {
             return res.status(400).json({ success: false, message: 'Invalid Credential.' })
         }
-        return res.status(200).json({ success: true, message: 'Login success.', data: user })
+        return res.status(200).json({ success: true, message: 'Login success.', data: {_id:user._id, fullName: user.fullName} })
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message })
     }
