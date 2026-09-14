@@ -52,7 +52,7 @@ const loginController = async (req, res) => {
         if (!passwordVerify) {
             return res.status(400).json({ success: false, message: 'Invalid Credential.' })
         }
-        return res.status(200).json({ success: true, message: 'Login success.', data: {_id:user._id, fullName: user.fullName} })
+        return res.status(200).json({ success: true, message: 'Login success.', data: { _id: user._id, fullName: user.fullName } })
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message })
     }
@@ -65,10 +65,10 @@ const verifyAccountController = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Please send token.' })
         }
         const decode = jwt.verify(token, process.env.JWT_SECRET)
-        if (!decode) {
-            return res.status(400).json({ success: false, message: 'Invalid token.' })
-        }
         const user = await User.findById(decode._id)
+        if (!user) {
+            return res.status(400).json({ success: false, message: 'User not found.' })
+        }
         if (user.isVerifed) {
             return res.status(400).json({ success: false, message: 'Account already verifed.' })
         }
@@ -76,7 +76,7 @@ const verifyAccountController = async (req, res) => {
         await user.save()
         return res.status(200).json({ success: true, message: 'Account verify success.', data: user })
     } catch (error) {
-        return res.status(500).json({ success: false, message: error.message })
+        return res.status(400).json({ success: false, message: 'Invalid token or token expired' })
     }
 }
 
