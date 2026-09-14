@@ -16,11 +16,22 @@ const sendEmail = async (email, token) => {
             from: '"LITAN MOLLA" <litanmern@gmail.com>',
             to: email,
             subject: "Please verify your email",
-            text: `Please verify your email by clicking the link below:
+            text: `Please verify your email by clicking the link below: https://localhost:800/verify/${token}`,
+        });
 
-http://localhost:800/verify/${token}
-
-This link will verify your email address.`,
+        console.log("Message sent: %s", info.messageId);
+        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    } catch (err) {
+        console.error("Error while sending mail:", err);
+    }
+}
+const resetPasswordEmail = async (email, token) => {
+    try {
+        const info = await transporter.sendMail({
+            from: '"LITAN MOLLA" <litanmern@gmail.com>',
+            to: email,
+            subject: "Reset your password",
+            text: `Please reset your password by clicking the link below: https://localhost:800/reset-password/${token}`,
         });
 
         console.log("Message sent: %s", info.messageId);
@@ -30,4 +41,4 @@ This link will verify your email address.`,
     }
 }
 
-module.exports = sendEmail
+module.exports = { sendEmail, resetPasswordEmail }

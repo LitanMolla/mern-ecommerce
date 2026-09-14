@@ -1,9 +1,15 @@
+/**
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
+
 const bcrypt = require('bcrypt')
 const User = require('../models/userModel');
-const sendEmail = require('../utils/sendEmail');
+const {sendEmail, resetPasswordEmail} = require('../utils/sendEmail');
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const generateAccessToken = require('../utils/generateAccessToken');
 const registerController = async (req, res) => {
     try {
         const { email, password, confrimPassword, terms, fullName } = req.body
@@ -28,9 +34,8 @@ const registerController = async (req, res) => {
         const user = new User({ email, terms, fullName, password: hashPassword })
         await user.save()
 
-        const token = jwt.sign({ _id: user._id, fullName: user.fullName, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' })
-
-        sendEmail(email, token)
+        const token = generateAccessToken(user)
+        await sendEmail(email, token)
 
         return res.status(201).json({ success: true, message: 'Register success.' })
     } catch (error) {
@@ -67,17 +72,38 @@ const verifyAccountController = async (req, res) => {
         const decode = jwt.verify(token, process.env.JWT_SECRET)
         const user = await User.findById(decode._id)
         if (!user) {
-            return res.status(400).json({ success: false, message: 'User not found.' })
+            return res.status(404).json({ success: false, message: 'User not found.' })
         }
         if (user.isVerifed) {
             return res.status(400).json({ success: false, message: 'Account already verifed.' })
         }
         user.isVerifed = true
         await user.save()
-        return res.status(200).json({ success: true, message: 'Account verify success.', data: user })
+        return res.status(200).json({ success: true, message: 'Account verify success.', data: { _id: user._id, fullName: user.fullName, isVerifed: user.isVerifed, email: user.email } })
     } catch (error) {
         return res.status(400).json({ success: false, message: 'Invalid token or token expired' })
     }
 }
 
-module.exports = { registerController, loginController, verifyAccountController }
+
+const forgotPasswordController = async (req,res) => {
+    try {
+        const {email} = req.body
+        if (!email) {
+            return res.status(400).json({ success: false, message: 'Email is required.'})
+        }
+        const existingUser = await User.findOne({email})
+        if (!existingUser) {
+            return res.status(404).json({ success: false, message: 'User not found.'})
+        }
+
+        const token = generateAccessToken(existingUser)
+        await resetPasswordEmail(email,token) 
+        return res.status(200).json({ success: true, message: 'Password resset email send successfully, please check your email.' })
+    } catch (error) {
+        
+    }
+}
+
+
+module.exports = { registerController, loginController, verifyAccountController, forgotPasswordController }
