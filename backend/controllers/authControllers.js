@@ -58,7 +58,7 @@ const loginController = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Invalid Credential.' })
         }
         const token = generateAccessToken(user)
-        return res.status(200).json({ success: true, message: 'Login success.', data: { _id: user._id, fullName: user.fullName , email: user.email, role: user.role} , accessToken: token})
+        return res.status(200).json({ success: true, message: 'Login success.', data: { _id: user._id, fullName: user.fullName, email: user.email, role: user.role }, accessToken: token })
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message })
     }
@@ -126,10 +126,16 @@ const resetPasswordController = async (req, res) => {
         }
         const hashPassword = bcrypt.hashSync(password, 10)
         const updateUser = await User.findByIdAndUpdate(decode._id, { password: hashPassword }, { new: true }).select('-password')
-        return res.status(200).json({ success: true, message: 'Password reset successfully' , data: updateUser})
+        return res.status(200).json({ success: true, message: 'Password reset successfully', data: updateUser })
     } catch (error) {
         return res.status(400).json({ success: false, message: 'Invalid token or token expired', })
     }
 }
 
-module.exports = { registerController, loginController, verifyAccountController, forgotPasswordController, resetPasswordController }
+module.exports = {
+    registerController,
+    loginController,
+    verifyAccountController,
+    forgotPasswordController,
+    resetPasswordController
+}
