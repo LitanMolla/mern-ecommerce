@@ -5,7 +5,7 @@ const userUpdateController = async (req, res) => {
         if (!id) {
             return req.status(400).json({ status: false, message: 'User id required' })
         }
-        const updatedUser = await User.findById(id, req.body, { new: true }).select('-password')
+        const updatedUser = await User.findByIdAndUpdate(id, req.body, { new: true }).select('-password')
         if (!updatedUser) {
             return res.status(400).json({ status: false, message: 'User not found' })
         }
@@ -15,5 +15,6 @@ const userUpdateController = async (req, res) => {
         return res.status(500).json({ status: false, message: 'Internel server error' })
     }
 }
+
 
 module.exports = { userUpdateController }
