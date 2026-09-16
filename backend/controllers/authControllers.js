@@ -1,8 +1,3 @@
-/**
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- */
-
 const bcrypt = require('bcrypt')
 const User = require('../models/userModel');
 const { sendEmail, resetPasswordEmail } = require('../utils/sendEmail');
