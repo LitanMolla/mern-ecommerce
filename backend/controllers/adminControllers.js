@@ -116,7 +116,16 @@ const categoryDeleteController = async (req, res) => {
         if (!deletedCategory) {
             res.status(404).json({success:true, message: 'Category not found', data: deletedCategory})
         }
-        res.status(200).json({success:true, message: 'Category deleted', data: deletedCategory})
+        return res.status(200).json({success:true, message: 'Category deleted', data: deletedCategory})
+    } catch (error) {
+        return res.status(500).json({ status: false, message: 'Internel server error' })
+    }
+}
+
+const getAllCategories = async (req,res)=> {
+    try {
+        const categories = await Category.find({})
+        return res.status(200).json({success:true, message: `Total: ${categories.length} found`, data: categories})
     } catch (error) {
         return res.status(500).json({ status: false, message: 'Internel server error' })
     }
@@ -130,5 +139,6 @@ module.exports = {
     getAllDeactiveUsersController,
     deleteUserController,
     updateCategory,
-    categoryDeleteController
+    categoryDeleteController,
+    getAllCategories
 }
