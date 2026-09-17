@@ -41,4 +41,20 @@ const resetPasswordEmail = async (email, token) => {
     }
 }
 
-module.exports = { sendEmail, resetPasswordEmail }
+const createCategoryEmail = async (category) => {
+    try {
+        const info = await transporter.sendMail({
+            from: '"LITAN MOLLA" <litanmern@gmail.com>',
+            to: 'litanmern@gmail.com',
+            subject: "New category created",
+            text: `New category: ${category} created, please go to admin panel for manage`,
+        });
+
+        console.log("Message sent: %s", info.messageId);
+        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    } catch (err) {
+        console.error("Error while sending mail:", err);
+    }
+}
+
+module.exports = { sendEmail, resetPasswordEmail,createCategoryEmail }

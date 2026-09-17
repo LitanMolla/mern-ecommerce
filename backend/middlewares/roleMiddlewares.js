@@ -11,6 +11,11 @@ const userMiddleware = async (req, res, next) => {
         if (decode.role != 'user') {
             return res.status(401).json({ success: false, message: 'Unauthorized request' })
         }
+        const user = await User.findById(decode._id)
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' })
+        }
+        req.user = user
         next()
     } catch (error) {
         return res.status(400).json({ success: false, message: 'Token invalid or expried' })
