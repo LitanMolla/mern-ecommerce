@@ -5,12 +5,14 @@ const {
     getUserController,
     getAllActiveUsersController,
     getAllDeactiveUsersController,
-    deleteUserController
+    deleteUserController,
+    updateCategory
 } = require('../controllers/adminControllers')
 
 const router = express.Router()
 
 router.post('/update/:id', userUpdateController)
+router.post('/update-category/:id', updateCategory)
 router.delete('/delete/:id', deleteUserController)
 router.get('/all-users', getAllUsersController)
 router.get('/user/:id', getUserController)

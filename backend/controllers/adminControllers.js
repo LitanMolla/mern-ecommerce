@@ -1,4 +1,5 @@
 const User = require('../models/userModel')
+const Category = require('../models/categoryModel')
 const userUpdateController = async (req, res) => {
     try {
         const { id } = req.params
@@ -29,7 +30,7 @@ const getAllUsersController = async (req, res) => {
 }
 const getAllActiveUsersController = async (req, res) => {
     try {
-        const users = await User.find({status: 'active'}).select('-password')
+        const users = await User.find({ status: 'active' }).select('-password')
         return res.status(200).json({
             succuss: true,
             message: `Total ${users.length} user found`,
@@ -41,7 +42,7 @@ const getAllActiveUsersController = async (req, res) => {
 }
 const getAllDeactiveUsersController = async (req, res) => {
     try {
-        const users = await User.find({status: 'suspended'}).select('-password')
+        const users = await User.find({ status: 'suspended' }).select('-password')
         return res.status(200).json({
             succuss: true,
             message: `Total ${users.length} user found`,
@@ -83,11 +84,34 @@ const deleteUserController = async (req, res) => {
     }
 }
 
+const updateCategory = async (req, res) => {
+    try {
+        const { id } = req.params
+        const { name } = req.body
+        if (!id) {
+            return res.status(400).json({ success: false, message: 'Category required' })
+        }
+        const updateName = name.trim().toLowerCase()
+        if (!updateName) {
+            return res.status(400).json({ success: false, message: 'Name required' })
+        }
+        const existingCategory = await Category.findById(id)
+        if (!existingCategory) {
+            return res.status(404).json({ success: false, message: 'Category not found' })
+        }
+        const updatedCategory = await Category.findByIdAndUpdate(id, { name: updateName }, { new: true })
+        return res.status(200).json({ success: true, message: 'Category updated', data: updatedCategory })
+    } catch (error) {
+        return res.status(500).json({ status: false, message: 'Internel server error' })
+    }
+}
+
 module.exports = {
     userUpdateController,
     getAllUsersController,
     getUserController,
     getAllActiveUsersController,
     getAllDeactiveUsersController,
-    deleteUserController
+    deleteUserController,
+    updateCategory
 }
