@@ -20,7 +20,7 @@ const getAllUsersController = async (req, res) => {
     try {
         const users = await User.find({}).select('-password')
         return res.status(200).json({
-            succuss: true,
+            success: true,
             message: `Total ${users.length} user found`,
             data: users
         })
@@ -32,7 +32,7 @@ const getAllActiveUsersController = async (req, res) => {
     try {
         const users = await User.find({ status: 'active' }).select('-password')
         return res.status(200).json({
-            succuss: true,
+            success: true,
             message: `Total ${users.length} user found`,
             data: users
         })
@@ -44,7 +44,7 @@ const getAllDeactiveUsersController = async (req, res) => {
     try {
         const users = await User.find({ status: 'suspended' }).select('-password')
         return res.status(200).json({
-            succuss: true,
+            success: true,
             message: `Total ${users.length} user found`,
             data: users
         })
