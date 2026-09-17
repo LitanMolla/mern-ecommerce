@@ -12,6 +12,6 @@ const categorySchema = new Schema({
         enum: ['active', 'pending', 'reject'],
         default: 'pending'
     }
-})
+}, { timestamps: true })
 
 module.exports = mongoose.model('Category', categorySchema)
