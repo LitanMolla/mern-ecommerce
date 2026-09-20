@@ -11,12 +11,21 @@ const options = {
     },
     servers: [
       {
-        url: process.env.SWAGGER_SERVER_URL,
+        url: process.env.SWAGGER_SERVER_URL || "http://localhost:8000",
+        description: "Development Server",
       },
     ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
   },
-
-  apis: [path.join(__dirname, "../routes/*.js")],
+  apis: [path.join(__dirname, "../routes/*.js").replace(/\\/g, "/")],
 };
 
 const swaggerSpec = swaggerJsdoc(options);
