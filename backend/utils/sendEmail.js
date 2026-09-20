@@ -57,4 +57,4 @@ const createCategoryEmail = async (category) => {
     }
 }
 
-module.exports = { sendEmail, resetPasswordEmail,createCategoryEmail }
+module.exports = { sendEmail, resetPasswordEmail, createCategoryEmail }
