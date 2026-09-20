@@ -5,7 +5,7 @@ const userUpdateController = async (req, res) => {
     try {
         const { id } = req.params
         if (!id) {
-            return req.status(400).json({ status: false, message: 'User id required' })
+            return res.status(400).json({ status: false, message: 'User id required' })
         }
         const updatedUser = await User.findByIdAndUpdate(id, req.body, { new: true }).select('-password')
         if (!updatedUser) {
