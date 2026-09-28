@@ -4,7 +4,7 @@ const userUpdateController = async (req, res) => {
     try {
         const { id } = req.params
         if (!id) {
-            return req.status(400).json({ status: false, message: 'User id required' })
+            return res.status(400).json({ status: false, message: 'User id required' })
         }
         const updatedUser = await User.findByIdAndUpdate(id, req.body, { new: true }).select('-password')
         if (!updatedUser) {
@@ -57,7 +57,7 @@ const getUserController = async (req, res) => {
     try {
         const { id } = req.params
         if (!id) {
-            return req.status(400).json({ status: false, message: 'User id required' })
+            return res.status(400).json({ status: false, message: 'User id required' })
         }
         const user = await User.findById(id).select('-password')
         if (!user) {
@@ -114,18 +114,18 @@ const categoryDeleteController = async (req, res) => {
         }
         const deletedCategory = await Category.findByIdAndDelete(id)
         if (!deletedCategory) {
-            res.status(404).json({success:true, message: 'Category not found', data: deletedCategory})
+            return res.status(404).json({ success: false, message: 'Category not found', data: deletedCategory })
         }
-        return res.status(200).json({success:true, message: 'Category deleted', data: deletedCategory})
+        return res.status(200).json({ success: true, message: 'Category deleted', data: deletedCategory })
     } catch (error) {
         return res.status(500).json({ status: false, message: 'Internel server error' })
     }
 }
 
-const getAllCategories = async (req,res)=> {
+const getAllCategories = async (req, res) => {
     try {
         const categories = await Category.find({})
-        return res.status(200).json({success:true, message: `Total: ${categories.length} found`, data: categories})
+        return res.status(200).json({ success: true, message: `Total: ${categories.length} found`, data: categories })
     } catch (error) {
         return res.status(500).json({ status: false, message: 'Internel server error' })
     }
