@@ -1,5 +1,5 @@
 const express = require('express')
-const { userUpdateController, createCategory } = require('../controllers/userControllers')
+const { userUpdateController } = require('../controllers/userControllers')
 const router = express.Router()
 
 /**
@@ -39,35 +39,5 @@ const router = express.Router()
  *         description: Internal server error
  */
 router.post('/update/:id', userUpdateController)
-/**
- * @swagger
- * /api/v1/user/create-category:
- *   post:
- *     summary: Create a new category
- *     tags:
- *       - Category
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - name
- *             properties:
- *               name:
- *                 type: string
- *                 example: Electronics
- *     responses:
- *       201:
- *         description: Category created successfully
- *
- *       400:
- *         description: Name is required or category already exists
- *
- *       500:
- *         description: Internal server error
- */
-router.post('/create-category', createCategory)
 
 module.exports = router

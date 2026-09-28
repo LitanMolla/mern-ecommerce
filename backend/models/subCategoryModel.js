@@ -12,11 +12,11 @@ const categorySchema = new Schema({
         enum: ['active', 'pending', 'reject'],
         default: 'pending'
     },
-    owner: {
+    parentCategory: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: 'User'
+        ref: 'Category'
     }
 }, { timestamps: true })
 
-module.exports = mongoose.model('Category', categorySchema)
+module.exports = mongoose.model('SubCategory', categorySchema)
