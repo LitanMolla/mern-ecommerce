@@ -10,6 +10,7 @@ const {
     categoryDeleteController,
     getAllCategories
 } = require('../controllers/adminControllers')
+const { getAllCategory, getAllCategoryWiseOwner } = require('../controllers/vendorController')
 
 const router = express.Router()
 
@@ -373,4 +374,6 @@ router.post('/update-category/:id', updateCategory)
  */
 router.post('/delete-category/:id', categoryDeleteController)
 
+router.get('/all/category', getAllCategory)
+router.get('/user/:id/category', getAllCategoryWiseOwner)
 module.exports = router

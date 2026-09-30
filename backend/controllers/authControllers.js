@@ -5,6 +5,7 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
 const jwt = require('jsonwebtoken');
 const generateAccessToken = require('../utils/generateAccessToken');
+
 const registerController = async (req, res) => {
     try {
         const { email, password, confrimPassword, terms, fullName } = req.body
