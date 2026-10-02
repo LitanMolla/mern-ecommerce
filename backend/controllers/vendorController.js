@@ -52,6 +52,7 @@ const getAllSubCategoryWiseCategory = async (req, res) => {
         return res.status(500).json({ status: false, message: 'Internel server error' })
     }
 }
+
 const getAllSubCategory = async (req, res) => {
     try {
         const subcategories = await SubCategory.find().populate('parentCategory')
@@ -60,6 +61,7 @@ const getAllSubCategory = async (req, res) => {
         return res.status(500).json({ status: false, message: 'Internel server error' })
     }
 }
+
 const getAllCategory = async (req, res) => {
     try {
         const categories = await Category.find().populate('owner', '-password')
@@ -68,24 +70,34 @@ const getAllCategory = async (req, res) => {
         return res.status(500).json({ status: false, message: 'Internel server error' })
     }
 }
+
 const getAllCategoryWiseOwner = async (req, res) => {
     try {
         const { id } = req.params
         if (!mongoose.isValidObjectId(id)) {
             return res.status(400).json({ success: false, message: 'Invalid Object ID' })
         }
-        const categories = await Category.find({owner:id}).populate('owner', '-password')
+        const categories = await Category.find({ owner: id }).populate('owner')
         res.status(200).json({ success: true, message: `Total ${categories.length} categories found wise owner`, data: categories })
     } catch (error) {
         return res.status(500).json({ status: false, message: 'Internel server error' })
     }
 }
 
+const getAllCategories = async (req, res) => {
+    try {
+        const categories = await Category.find({}).populate('owner')
+        return res.status(200).json({ success: true, message: `Total: ${categories.length} found`, data: categories })
+    } catch (error) {
+        return res.status(500).json({ status: false, message: 'Internel server error' })
+    }
+}
 module.exports = {
     createCategory,
     createSubCategory,
     getAllSubCategory,
     getAllCategory,
     getAllSubCategoryWiseCategory,
-    getAllCategoryWiseOwner
+    getAllCategoryWiseOwner,
+    getAllCategories
 }

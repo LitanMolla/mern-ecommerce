@@ -82,7 +82,6 @@ const verifyAccountController = async (req, res) => {
     }
 }
 
-
 const forgotPasswordController = async (req, res) => {
     try {
         const { email } = req.body

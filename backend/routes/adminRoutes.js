@@ -253,7 +253,7 @@ router.delete('/delete/:id', deleteUserController)
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Total: 5 found
+ *                   example: "Total: 5 found"
  *                 data:
  *                   type: array
  *                   items:
