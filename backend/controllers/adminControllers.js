@@ -124,7 +124,7 @@ const categoryDeleteController = async (req, res) => {
 
 const getAllCategories = async (req, res) => {
     try {
-        const categories = await Category.find({})
+        const categories = await Category.find({}).populate('owner')
         return res.status(200).json({ success: true, message: `Total: ${categories.length} found`, data: categories })
     } catch (error) {
         return res.status(500).json({ status: false, message: 'Internel server error' })
