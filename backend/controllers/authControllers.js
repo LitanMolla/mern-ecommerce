@@ -45,7 +45,7 @@ const loginController = async (req, res) => {
         if (!email || !password) {
             return res.status(400).json({ success: false, message: 'Please fill in all required fields.' })
         }
-        const user = await User.findOne({ email })
+        const user = await User.findOne({ email }).select('+password')
         if (!user) {
             return res.status(400).json({ success: false, message: 'Invalid Credential.' })
         }

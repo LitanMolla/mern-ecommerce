@@ -27,14 +27,15 @@ const createSubCategory = async (req, res) => {
         if (!name || !parentCategory) {
             return res.status(400).json({ success: false, message: 'Name and parentCategory id is required' })
         }
-        const categoryName = name.trim().toLowerCase()
-        const existingCategory = await SubCategory.findOne({ name: categoryName })
+        const subcategoryName = name.trim().toLowerCase()
+        const existingCategory = await SubCategory.findOne({ name: subcategoryName })
         if (existingCategory) {
             return res.status(400).json({ success: false, message: 'Category already exist' })
         }
-        const category = new SubCategory({ name: categoryName, parentCategory })
-        await category.save()
-        return res.status(201).json({ success: true, message: 'Category created successfully', data: category })
+        const subcategory = new SubCategory({ name: subcategoryName })
+        await Category.findByIdAndUpdate(parentCategory, { $push: { subCategory: subcategory._id } })
+        await subcategory.save()
+        return res.status(201).json({ success: true, message: 'Category created successfully', data: subcategory })
     } catch (error) {
         return res.status(500).json({ status: false, message: 'Internel server error', error })
     }

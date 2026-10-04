@@ -11,11 +11,6 @@ const categorySchema = new Schema({
         type: String,
         enum: ['active', 'pending', 'reject'],
         default: 'pending'
-    },
-    parentCategory: {
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: 'Category'
     }
 }, { timestamps: true })
 

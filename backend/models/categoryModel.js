@@ -16,7 +16,14 @@ const categorySchema = new Schema({
         type: Schema.Types.ObjectId,
         required: true,
         ref: 'User'
-    }
+    },
+    subCategory: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'SubCategory',
+            default: []
+        }
+    ]
 }, { timestamps: true })
 
 module.exports = mongoose.model('Category', categorySchema)
