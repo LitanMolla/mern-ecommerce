@@ -41,7 +41,7 @@ const createSubCategory = async (req, res) => {
     }
 }
 
-const getAllSubCategoryWiseCategory = async (req, res) => {
+const getAllSubCategoriesByCategory = async (req, res) => {
     try {
         const { id } = req.params
         if (!mongoose.isValidObjectId(id)) {
@@ -98,7 +98,7 @@ module.exports = {
     createSubCategory,
     getAllSubCategory,
     getAllCategory,
-    getAllSubCategoryWiseCategory,
+    getAllSubCategoriesByCategory,
     getAllCategoryWiseOwner,
     getAllCategories
 }
