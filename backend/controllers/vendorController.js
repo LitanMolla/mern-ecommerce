@@ -32,7 +32,7 @@ const createSubCategory = async (req, res) => {
         if (existingCategory) {
             return res.status(400).json({ success: false, message: 'Subcategory already exist' })
         }
-        const subcategory = new SubCategory({ name: subcategoryName })
+        const subcategory = new SubCategory({ name: subcategoryName, parentCategory: parentCategory })
         await Category.findByIdAndUpdate(parentCategory, { $push: { subCategory: subcategory._id } })
         await subcategory.save()
         return res.status(201).json({ success: true, message: 'Subcategory created successfully', data: subcategory })
@@ -63,16 +63,17 @@ const getAllSubCategory = async (req, res) => {
     }
 }
 
-const getAllCategory = async (req, res) => {
+
+const getAllCategories = async (req, res) => {
     try {
-        const categories = await Category.find().populate('owner', '-password')
-        res.status(200).json({ success: true, message: `Total ${categories.length} categories found`, data: categories })
+        const categories = await Category.find({}).populate('owner')
+        return res.status(200).json({ success: true, message: `Total: ${categories.length} found`, data: categories })
     } catch (error) {
         return res.status(500).json({ status: false, message: 'Internal server error' })
     }
 }
 
-const getAllCategoryWiseOwner = async (req, res) => {
+const getAllCategoriesByOwner = async (req, res) => {
     try {
         const { id } = req.params
         if (!mongoose.isValidObjectId(id)) {
@@ -85,20 +86,11 @@ const getAllCategoryWiseOwner = async (req, res) => {
     }
 }
 
-const getAllCategories = async (req, res) => {
-    try {
-        const categories = await Category.find({}).populate('owner')
-        return res.status(200).json({ success: true, message: `Total: ${categories.length} found`, data: categories })
-    } catch (error) {
-        return res.status(500).json({ status: false, message: 'Internal server error' })
-    }
-}
 module.exports = {
     createCategory,
     createSubCategory,
     getAllSubCategory,
-    getAllCategory,
     getAllSubCategoriesByCategory,
-    getAllCategoryWiseOwner,
+    getAllCategoriesByOwner,
     getAllCategories
 }
