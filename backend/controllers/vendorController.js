@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const Category = require('../models/categoryModel')
 const SubCategory = require('../models/subCategoryModel')
+const getCategoriesByOwnerPromise = require('../utils/getCategoriesByOwnerPromise')
 
 const createCategory = async (req, res) => {
     try {
@@ -81,25 +82,8 @@ const getAllCategoriesByOwner = async (req, res) => {
         }
         // const categories = await Category.find({ owner: id }).populate('owner').populate('subCategory')
         // res.status(200).json({ success: true, message: `Total ${categories.length} categories found wise owner`, data: categories })
-        const categories = await Category.find({ owner: id }).populate('owner').lean()
-        const ownerCategoryPromise = new Promise((resolved, rejected) => {
-            try {
-                let data = []
-                categories.map(async (category) => {
-                    const subcategories = await SubCategory.find({ parentCategory: category._id })
-                    const categoryWithSubcategories = { ...category, subCategory: subcategories }
-                    data.push(categoryWithSubcategories)
-                    if (data.length == categories.length) {
-                        resolved(data)
-                    }
-                })
 
-            } catch (error) {
-                rejected(error)
-            }
-        })
-
-        const data = await ownerCategoryPromise
+        const data = await getCategoriesByOwnerPromise(id)
         res.status(200).json({ success: true, message: ` categories found wise owner`, data: data })
     } catch (error) {
         return res.status(500).json({ status: false, message: 'Internal server error' })
