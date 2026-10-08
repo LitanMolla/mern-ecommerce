@@ -18,7 +18,7 @@ const router = express.Router()
  *             required:
  *               - email
  *               - password
- *               - confrimPassword
+ *               - confirmPassword
  *               - terms
  *             properties:
  *               email:
@@ -29,7 +29,7 @@ const router = express.Router()
  *                 type: string
  *                 format: password
  *                 example: Password123
- *               confrimPassword:
+ *               confirmPassword:
  *                 type: string
  *                 format: password
  *                 example: Password123
@@ -237,14 +237,14 @@ router.post('/forgot-password', forgotPasswordController)
  *             type: object
  *             required:
  *               - password
- *               - confrimPassword
+ *               - confirmPassword
  *             properties:
  *               password:
  *                 type: string
  *                 format: password
  *                 minLength: 8
  *                 example: NewPassword123
- *               confrimPassword:
+ *               confirmPassword:
  *                 type: string
  *                 format: password
  *                 minLength: 8

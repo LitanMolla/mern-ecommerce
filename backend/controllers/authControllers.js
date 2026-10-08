@@ -8,7 +8,7 @@ const generateAccessToken = require('../utils/generateAccessToken');
 
 const registerController = async (req, res) => {
     try {
-        const { email, password, confrimPassword, terms, fullName } = req.body
+        const { email, password, confirmPassword, terms, fullName } = req.body
         if (!email || !password || !terms) {
             return res.status(400).json({ success: false, message: 'Please fill in all required fields.' })
         }
@@ -21,7 +21,7 @@ const registerController = async (req, res) => {
         if (!passwordRegex.test(password)) {
             return res.status(400).json({ success: false, message: 'Password must contain at least one letter and one number.' })
         }
-        if (password !== confrimPassword) {
+        if (password !== confirmPassword) {
             return res.status(400).json({ success: false, message: 'Passwords do not match.' })
         }
 
@@ -104,11 +104,11 @@ const forgotPasswordController = async (req, res) => {
 const resetPasswordController = async (req, res) => {
     try {
         const { token } = req.params
-        const { password, confrimPassword } = req.body
-        if (!password || !confrimPassword) {
+        const { password, confirmPassword } = req.body
+        if (!password || !confirmPassword) {
             return res.status(400).json({ success: false, message: 'All feild are requred.' })
         }
-        if (password !== confrimPassword) {
+        if (password !== confirmPassword) {
             return res.status(400).json({ success: false, message: 'Password not matched.' })
         }
         if (!token) {

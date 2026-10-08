@@ -79,8 +79,28 @@ const getAllCategoriesByOwner = async (req, res) => {
         if (!mongoose.isValidObjectId(id)) {
             return res.status(400).json({ success: false, message: 'Invalid Object ID' })
         }
-        const categories = await Category.find({ owner: id }).populate('owner')
-        res.status(200).json({ success: true, message: `Total ${categories.length} categories found wise owner`, data: categories })
+        // const categories = await Category.find({ owner: id }).populate('owner').populate('subCategory')
+        // res.status(200).json({ success: true, message: `Total ${categories.length} categories found wise owner`, data: categories })
+        const categories = await Category.find({ owner: id }).populate('owner').lean()
+        const ownerCategoryPromise = new Promise((resolved, rejected) => {
+            try {
+                let data = []
+                categories.map(async (category) => {
+                    const subcategories = await SubCategory.find({ parentCategory: category._id })
+                    const categoryWithSubcategories = { ...category, subCategory: subcategories }
+                    data.push(categoryWithSubcategories)
+                    if (data.length == categories.length) {
+                        resolved(data)
+                    }
+                })
+
+            } catch (error) {
+                rejected(error)
+            }
+        })
+
+        const data = await ownerCategoryPromise
+        res.status(200).json({ success: true, message: ` categories found wise owner`, data: data })
     } catch (error) {
         return res.status(500).json({ status: false, message: 'Internal server error' })
     }
