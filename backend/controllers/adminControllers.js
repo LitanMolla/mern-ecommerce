@@ -12,7 +12,7 @@ const userUpdateController = async (req, res) => {
         }
         return res.status(200).json({ success: true, message: 'Updated successfully', data: updatedUser })
     } catch (error) {
-        return res.status(500).json({ status: false, message: 'Internel server error' })
+        return res.status(500).json({ status: false, message: 'Internal server error' })
     }
 }
 
@@ -25,7 +25,7 @@ const getAllUsersController = async (req, res) => {
             data: users
         })
     } catch (error) {
-        return res.status(500).json({ status: false, message: 'Internel server error' })
+        return res.status(500).json({ status: false, message: 'Internal server error' })
     }
 }
 const getAllActiveUsersController = async (req, res) => {
@@ -37,7 +37,7 @@ const getAllActiveUsersController = async (req, res) => {
             data: users
         })
     } catch (error) {
-        return res.status(500).json({ status: false, message: 'Internel server error' })
+        return res.status(500).json({ status: false, message: 'Internal server error' })
     }
 }
 const getAllDeactiveUsersController = async (req, res) => {
@@ -49,7 +49,7 @@ const getAllDeactiveUsersController = async (req, res) => {
             data: users
         })
     } catch (error) {
-        return res.status(500).json({ status: false, message: 'Internel server error' })
+        return res.status(500).json({ status: false, message: 'Internal server error' })
     }
 }
 
@@ -65,7 +65,7 @@ const getUserController = async (req, res) => {
         }
         return res.status(200).json({ success: true, message: 'User find successfully', data: user })
     } catch (error) {
-        return res.status(500).json({ status: false, message: 'Internel server error' })
+        return res.status(500).json({ status: false, message: 'Internal server error' })
     }
 }
 const deleteUserController = async (req, res) => {
@@ -80,7 +80,7 @@ const deleteUserController = async (req, res) => {
         }
         return res.status(200).json({ success: true, message: 'User deleted successfully' })
     } catch (error) {
-        return res.status(500).json({ status: false, message: 'Internel server error' })
+        return res.status(500).json({ status: false, message: 'Internal server error' })
     }
 }
 
@@ -102,7 +102,7 @@ const updateCategory = async (req, res) => {
         const updatedCategory = await Category.findByIdAndUpdate(id, { name: updateName }, { new: true })
         return res.status(200).json({ success: true, message: 'Category updated', data: updatedCategory })
     } catch (error) {
-        return res.status(500).json({ status: false, message: 'Internel server error' })
+        return res.status(500).json({ status: false, message: 'Internal server error' })
     }
 }
 
@@ -118,7 +118,7 @@ const categoryDeleteController = async (req, res) => {
         }
         return res.status(200).json({ success: true, message: 'Category deleted', data: deletedCategory })
     } catch (error) {
-        return res.status(500).json({ status: false, message: 'Internel server error' })
+        return res.status(500).json({ status: false, message: 'Internal server error' })
     }
 }
 
@@ -127,7 +127,7 @@ const getAllCategories = async (req, res) => {
         const categories = await Category.find({}).populate('owner')
         return res.status(200).json({ success: true, message: `Total: ${categories.length} found`, data: categories })
     } catch (error) {
-        return res.status(500).json({ status: false, message: 'Internel server error' })
+        return res.status(500).json({ status: false, message: 'Internal server error' })
     }
 }
 
