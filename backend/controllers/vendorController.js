@@ -98,23 +98,32 @@ const createProductController = async (req, res) => {
     try {
         const {
             title,
-            description,
-            shortDescription,
+            description = '',
+            shortDescription = '',
             price,
             images,
-            discountPrice,
-            status,
+            discountPrice = 0,
             category,
             subCategory,
             owner
         } = req.body
-        // if (!title || !description || !shortDescription || !price || !images || !discountPrice || !status || !category || !subCategory || !owner
+        // if (!title || !description || !shortDescription || !price || !images || !discountPrice || !category || !subCategory || !owner
         // ) {
         //     return res.status(400).json({ success: false, message: 'Please fill up all feild' })
         // }
         const slug = title.toLowerCase().trim().split(' ').join('-')
-        console.log(slug)
-        res.status(201).json({success: true, message: 'Product created successfully', data: slug})
+        const isExistbySlug = await Product.findOne({ slug })
+        if (isExistbySlug) {
+            return res.status(400).json({ success: false, message: 'Product already exist with this slug' })
+        }
+        const sku = `LM-${Date.now()}`
+        const isExistbySku = await Product.findOne({ sku })
+        if (isExistbySku) {
+            return res.status(400).json({ success: false, message: 'Product already exist with this sku' })
+        }
+        const product = new Product({ title, description, shortDescription, price, discountPrice, category, subCategory, owner })
+        console.log({ slug, sku })
+        res.status(201).json({ success: true, message: 'Product created successfully', data: slug })
     } catch (error) {
 
     }

@@ -19,6 +19,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongodb": "^7.6.0",
     "mongoose": "^9.9.5",
+    "multer": "^2.4.0",
     "nodemailer": "^10.0.1",
     "nodemon": "^3.1.14",
     "swagger-jsdoc": "^6.3.0",
