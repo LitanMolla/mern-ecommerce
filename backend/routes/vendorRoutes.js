@@ -7,9 +7,12 @@ const {
     getAllCategoriesByOwner,
     getAllCategories,
     createProductController,
-    getAllProductsController, 
+    getAllProductsController,
     getSingleProductsController,
-    getProductsByOwnerController} = require('../controllers/vendorController')
+    getProductsByOwnerController,
+    deleteProductsController, 
+    getProductsBySubCategoryController,
+    getProductsByCategoryController} = require('../controllers/vendorController')
 const upload = require('../middlewares/uploadMiddleware')
 
 const router = express.Router()
@@ -27,5 +30,8 @@ router.post('/products/create', upload.array('images'), createProductController)
 router.get('/products/all', getAllProductsController)
 router.get('/products/:id', getSingleProductsController)
 router.get('/products/owner/:ownerId', getProductsByOwnerController)
+router.get('/products/category/:categoryId', getProductsByCategoryController)
+router.get('/products/subcategory/:subcategoryId', getProductsBySubCategoryController)
+router.delete('/products/:id', deleteProductsController)
 
 module.exports = router

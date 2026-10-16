@@ -158,16 +158,43 @@ const getSingleProductsController = async (req, res) => {
 const getProductsByOwnerController = async (req, res) => {
     try {
         const { ownerId } = req.params
-        const products = await Product.find({owner:ownerId}).populate(['owner', 'category', 'subCategory'])
-        if (!products) {
-            return res.status(404).json({ success: false, message: 'Product not found' })
-        }
+        const products = await Product.find({ owner: ownerId }).populate(['owner', 'category', 'subCategory'])
         return res.status(200).json({ success: true, message: 'Products get successfully by owner', data: products })
     } catch (error) {
         return res.status(500).json({ status: false, message: 'Internal server error', error })
     }
 }
+const getProductsByCategoryController = async (req, res) => {
+    try {
+        const { categoryId } = req.params
+        const products = await Product.find({ category: categoryId }).populate(['owner', 'category', 'subCategory'])
+        return res.status(200).json({ success: true, message: 'Products get successfully by category', data: products })
+    } catch (error) {
+        return res.status(500).json({ status: false, message: 'Internal server error', error })
+    }
+}
+const getProductsBySubCategoryController = async (req, res) => {
+    try {
+        const { subcategoryId } = req.params
+        const products = await Product.find({ subCategory: subcategoryId }).populate(['owner', 'category', 'subCategory'])
+        return res.status(200).json({ success: true, message: 'Products get successfully by subcategory', data: products })
+    } catch (error) {
+        return res.status(500).json({ status: false, message: 'Internal server error', error })
+    }
+}
 
+const deleteProductsController = async (req, res) => {
+    try {
+        const { id } = req.params
+        const product = await Product.findByIdAndDelete(id)
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found or already deleted' })
+        }
+        return res.status(200).json({ success: true, message: 'Product deleted successfully', data: product })
+    } catch (error) {
+        return res.status(500).json({ status: false, message: 'Internal server error', error })
+    }
+}
 
 module.exports = {
     createCategory,
@@ -179,5 +206,8 @@ module.exports = {
     createProductController,
     getAllProductsController,
     getSingleProductsController,
-    getProductsByOwnerController
+    getProductsByOwnerController,
+    deleteProductsController,
+    getProductsByCategoryController,
+    getProductsBySubCategoryController
 }
