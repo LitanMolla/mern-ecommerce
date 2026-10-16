@@ -155,6 +155,7 @@ const getSingleProductsController = async (req, res) => {
         return res.status(500).json({ status: false, message: 'Internal server error', error })
     }
 }
+
 const getProductsByOwnerController = async (req, res) => {
     try {
         const { ownerId } = req.params
@@ -164,6 +165,7 @@ const getProductsByOwnerController = async (req, res) => {
         return res.status(500).json({ status: false, message: 'Internal server error', error })
     }
 }
+
 const getProductsByCategoryController = async (req, res) => {
     try {
         const { categoryId } = req.params
@@ -173,6 +175,7 @@ const getProductsByCategoryController = async (req, res) => {
         return res.status(500).json({ status: false, message: 'Internal server error', error })
     }
 }
+
 const getProductsBySubCategoryController = async (req, res) => {
     try {
         const { subcategoryId } = req.params
