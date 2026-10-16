@@ -6,7 +6,10 @@ const {
     getAllSubCategoriesByCategory,
     getAllCategoriesByOwner,
     getAllCategories,
-    createProductController } = require('../controllers/vendorController')
+    createProductController,
+    getAllProductsController, 
+    getSingleProductsController,
+    getProductsByOwnerController} = require('../controllers/vendorController')
 const upload = require('../middlewares/uploadMiddleware')
 
 const router = express.Router()
@@ -20,6 +23,9 @@ router.get('/category/:id/subcategory', getAllSubCategoriesByCategory)
 router.get('/user/:id/category', getAllCategoriesByOwner)
 
 // products routes start
-router.post('/products/create',upload.array('images'), createProductController)
+router.post('/products/create', upload.array('images'), createProductController)
+router.get('/products/all', getAllProductsController)
+router.get('/products/:id', getSingleProductsController)
+router.get('/products/owner/:ownerId', getProductsByOwnerController)
 
 module.exports = router

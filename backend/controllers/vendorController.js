@@ -126,13 +126,48 @@ const createProductController = async (req, res) => {
                 isMain: mainImageIndex == index
             }
         })
-        const product = new Product({ title, description, shortDescription, price, discountPrice, category, subCategory, owner,images })
-        console.log({ slug, sku })
-        res.status(201).json({ success: true, message: 'Product created successfully', data: product })
+        const product = new Product({ title, description, shortDescription, price, discountPrice, category, subCategory, owner, images, slug })
+        await product.save()
+        return res.status(201).json({ success: true, message: 'Product created successfully', data: product })
     } catch (error) {
-
+        return res.status(500).json({ status: false, message: 'Internal server error' })
     }
 }
+
+const getAllProductsController = async (req, res) => {
+    try {
+        const products = await Product.find().populate(['owner', 'category', 'subCategory'])
+        return res.status(200).json({ success: true, message: 'Products get successfully', data: products })
+    } catch (error) {
+        return res.status(500).json({ status: false, message: 'Internal server error' })
+    }
+}
+
+const getSingleProductsController = async (req, res) => {
+    try {
+        const { id } = req.params
+        const product = await Product.findById(id).populate(['owner', 'category', 'subCategory'])
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found' })
+        }
+        return res.status(200).json({ success: true, message: 'Product get successfully', data: product })
+    } catch (error) {
+        return res.status(500).json({ status: false, message: 'Internal server error', error })
+    }
+}
+const getProductsByOwnerController = async (req, res) => {
+    try {
+        const { ownerId } = req.params
+        const products = await Product.find({owner:ownerId}).populate(['owner', 'category', 'subCategory'])
+        if (!products) {
+            return res.status(404).json({ success: false, message: 'Product not found' })
+        }
+        return res.status(200).json({ success: true, message: 'Products get successfully by owner', data: products })
+    } catch (error) {
+        return res.status(500).json({ status: false, message: 'Internal server error', error })
+    }
+}
+
 
 module.exports = {
     createCategory,
@@ -141,5 +176,8 @@ module.exports = {
     getAllSubCategoriesByCategory,
     getAllCategoriesByOwner,
     getAllCategories,
-    createProductController
+    createProductController,
+    getAllProductsController,
+    getSingleProductsController,
+    getProductsByOwnerController
 }
