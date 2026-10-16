@@ -66,7 +66,6 @@ const getAllSubCategory = async (req, res) => {
     }
 }
 
-
 const getAllCategories = async (req, res) => {
     try {
         const categories = await Category.find({}).populate('owner')
@@ -101,10 +100,10 @@ const createProductController = async (req, res) => {
             description = '',
             shortDescription = '',
             price,
-            images,
             discountPrice = 0,
             category,
             subCategory,
+            mainImageIndex = 0,
             owner
         } = req.body
         // if (!title || !description || !shortDescription || !price || !images || !discountPrice || !category || !subCategory || !owner
@@ -121,9 +120,15 @@ const createProductController = async (req, res) => {
         if (isExistbySku) {
             return res.status(400).json({ success: false, message: 'Product already exist with this sku' })
         }
-        const product = new Product({ title, description, shortDescription, price, discountPrice, category, subCategory, owner })
+        const images = req.files.map((file, index) => {
+            return {
+                url: file.path,
+                isMain: mainImageIndex == index
+            }
+        })
+        const product = new Product({ title, description, shortDescription, price, discountPrice, category, subCategory, owner,images })
         console.log({ slug, sku })
-        res.status(201).json({ success: true, message: 'Product created successfully', data: slug })
+        res.status(201).json({ success: true, message: 'Product created successfully', data: product })
     } catch (error) {
 
     }
