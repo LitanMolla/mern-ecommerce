@@ -152,7 +152,7 @@ const getSingleProductsController = async (req, res) => {
         }
         return res.status(200).json({ success: true, message: 'Product get successfully', data: product })
     } catch (error) {
-        return res.status(500).json({ status: false, message: 'Internal server error', error })
+        return res.status(500).json({ status: false, message: 'Internal server error' })
     }
 }
 
@@ -162,7 +162,7 @@ const getProductsByOwnerController = async (req, res) => {
         const products = await Product.find({ owner: ownerId }).populate(['owner', 'category', 'subCategory'])
         return res.status(200).json({ success: true, message: 'Products get successfully by owner', data: products })
     } catch (error) {
-        return res.status(500).json({ status: false, message: 'Internal server error', error })
+        return res.status(500).json({ status: false, message: 'Internal server error' })
     }
 }
 
@@ -172,7 +172,7 @@ const getProductsByCategoryController = async (req, res) => {
         const products = await Product.find({ category: categoryId }).populate(['owner', 'category', 'subCategory'])
         return res.status(200).json({ success: true, message: 'Products get successfully by category', data: products })
     } catch (error) {
-        return res.status(500).json({ status: false, message: 'Internal server error', error })
+        return res.status(500).json({ status: false, message: 'Internal server error' })
     }
 }
 
@@ -182,20 +182,20 @@ const getProductsBySubCategoryController = async (req, res) => {
         const products = await Product.find({ subCategory: subcategoryId }).populate(['owner', 'category', 'subCategory'])
         return res.status(200).json({ success: true, message: 'Products get successfully by subcategory', data: products })
     } catch (error) {
-        return res.status(500).json({ status: false, message: 'Internal server error', error })
+        return res.status(500).json({ status: false, message: 'Internal server error' })
     }
 }
 
 const deleteProductsController = async (req, res) => {
     try {
         const { id } = req.params
-        const product = await Product.findByIdAndDelete(id)
-        if (!product) {
+        const deletedProduct = await Product.findByIdAndDelete(id)
+        if (!deletedProduct) {
             return res.status(404).json({ success: false, message: 'Product not found or already deleted' })
         }
-        return res.status(200).json({ success: true, message: 'Product deleted successfully', data: product })
+        return res.status(200).json({ success: true, message: 'Product deleted successfully', data: deletedProduct })
     } catch (error) {
-        return res.status(500).json({ status: false, message: 'Internal server error', error })
+        return res.status(500).json({ status: false, message: 'Internal server error' })
     }
 }
 
