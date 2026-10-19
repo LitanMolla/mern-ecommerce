@@ -1,4 +1,5 @@
 const Product = require('../models/productModel')
+const { readSheet } = require('read-excel-file/node')
 
 // product controller start
 const createProductController = async (req, res) => {
@@ -12,7 +13,8 @@ const createProductController = async (req, res) => {
             category,
             subCategory,
             mainImageIndex = 0,
-            owner
+            owner,
+            stock
         } = req.body
         // if (!title || !description || !shortDescription || !price || !images || !discountPrice || !category || !subCategory || !owner
         // ) {
@@ -34,7 +36,7 @@ const createProductController = async (req, res) => {
                 isMain: mainImageIndex == index
             }
         })
-        const product = new Product({ title, description, shortDescription, price, discountPrice, category, subCategory, owner, images, slug })
+        const product = new Product({ title, stock, description, shortDescription, price, discountPrice, category, subCategory, owner, images, slug })
         await product.save()
         return res.status(201).json({ success: true, message: 'Product created successfully', data: product })
     } catch (error) {
@@ -107,6 +109,70 @@ const deleteProductsController = async (req, res) => {
     }
 }
 
+
+const schema = {
+    title: {
+        column: "title",
+        type: String,
+    },
+    slug: {
+        column: "slug",
+        type: String,
+    },
+    sku: {
+        column: "sku",
+        type: String,
+    },
+    shortDescription: {
+        column: "shortDescription",
+        type: String,
+    },
+    description: {
+        column: "description",
+        type: String,
+    },
+    price: {
+        column: "price",
+        type: Number,
+    },
+    discountPrice: {
+        column: "discountPrice",
+        type: Number,
+    },
+    stock: {
+        column: "stock",
+        type: Number,
+    },
+    images: {
+        column: "images",
+        type: String,
+    },
+};
+
+const bulkProductsUploadController = async (req, res) => {
+    try {
+        const { objects, errors } = await readSheet(req.file.path, { schema })
+
+
+        const products = objects.map((product) => (
+            {
+                ...product,
+                images: {
+                    url: product.images
+                },
+                category: '6ac778fbf3ff58f47acc815d',
+                subCategory: '6ac77b31f3ff58f47acc8160',
+                owner: '6ac206a8ce41c4c41fea9867'
+            }
+        ))
+        const data = await Product.insertMany(products)
+        console.log({ products, data })
+        return res.status(201).json({ success: true, message: 'Products uplloaded successfully', data: { errors, data } })
+    } catch (error) {
+        return res.status(500).json({ status: false, message: 'Internal server error', error })
+    }
+}
+
 module.exports = {
     createProductController,
     getAllProductsController,
@@ -114,5 +180,6 @@ module.exports = {
     getProductsByOwnerController,
     deleteProductsController,
     getProductsByCategoryController,
-    getProductsBySubCategoryController
+    getProductsBySubCategoryController,
+    bulkProductsUploadController
 }

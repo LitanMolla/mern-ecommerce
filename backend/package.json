@@ -22,9 +22,12 @@
     "multer": "^2.4.0",
     "nodemailer": "^10.0.1",
     "nodemon": "^3.1.14",
+    "random": "^5.5.1",
+    "read-excel-file": "^9.3.12",
     "swagger-jsdoc": "^6.3.0",
     "swagger-ui": "^5.33.0",
     "swagger-ui-express": "^5.0.1",
+    "write-excel-file": "^4.1.1",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {

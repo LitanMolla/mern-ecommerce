@@ -30,6 +30,10 @@ const productSchema = new Schema({
     discountPrice: {
         type: Number
     },
+    stock: {
+        type: Number,
+        min: 0
+    },
     images: [
         {
             url: {
