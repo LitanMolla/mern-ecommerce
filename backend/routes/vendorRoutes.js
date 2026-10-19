@@ -6,14 +6,14 @@ const {
     getAllSubCategoriesByCategory,
     getAllCategoriesByOwner,
     getAllCategories,
-    createProductController,
-    getAllProductsController,
+} = require('../controllers/vendorController')
+const upload = require('../middlewares/uploadMiddleware')
+const { createProductController, getAllProductsController,
     getSingleProductsController,
     getProductsByOwnerController,
-    deleteProductsController, 
+    deleteProductsController,
     getProductsBySubCategoryController,
-    getProductsByCategoryController} = require('../controllers/vendorController')
-const upload = require('../middlewares/uploadMiddleware')
+    getProductsByCategoryController } = require('../controllers/productControllers')
 
 const router = express.Router()
 
