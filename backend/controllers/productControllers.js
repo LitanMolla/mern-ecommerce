@@ -1,6 +1,8 @@
+const { nanoid } = require("nanoid");
+const slugify = require("slugify")
 const Product = require('../models/productModel')
 const { readSheet } = require('read-excel-file/node')
-const crypto = require("crypto");
+
 
 // product controller start
 const createProductController = async (req, res) => {
@@ -21,13 +23,12 @@ const createProductController = async (req, res) => {
         // ) {
         //     return res.status(400).json({ success: false, message: 'Please fill up all feild' })
         // }
-        const slug = title.toLowerCase().trim().split(' ').join('-')
+        const slug = slugify(title, { lower: true, strict: true, trim: true })
         const isExistbySlug = await Product.findOne({ slug })
         if (isExistbySlug) {
             return res.status(400).json({ success: false, message: 'Product already exist with this slug' })
         }
-        const uniqueNumber = crypto.randomInt(1000000000, 10000000000);
-        const sku = `LM-${uniqueNumber}`
+        const sku = `LM-${nanoid(10)}`
         const isExistbySku = await Product.findOne({ sku })
         if (isExistbySku) {
             return res.status(400).json({ success: false, message: 'Product already exist with this sku' })
@@ -153,9 +154,10 @@ const schema = {
 
 const bulkProductsUploadController = async (req, res) => {
     try {
+        if (!req.file) {
+            return res.status(400).json({success: false, message: 'Please select product file'})
+        }
         const { objects, errors } = await readSheet(req.file.path, { schema })
-
-
         const products = objects.map((product) => (
             {
                 ...product,
@@ -165,12 +167,11 @@ const bulkProductsUploadController = async (req, res) => {
                 category: '6ac778fbf3ff58f47acc815d',
                 subCategory: '6ac77b31f3ff58f47acc8160',
                 owner: '6ac206a8ce41c4c41fea9867',
-                sku: product.sku || `LM-${crypto.randomInt(1000000000, 10000000000)}`,
-                slug: product.slug || 
+                sku: product.sku || `LM-${nanoid(10)}`,
+                slug: product.slug || slugify(product.title, { lower: true, strict: true, trim: true })
             }
         ))
         const data = await Product.insertMany(products)
-        console.log({ products, data })
         return res.status(201).json({ success: true, message: 'Products uplloaded successfully', data: { errors, data } })
     } catch (error) {
         return res.status(500).json({ status: false, message: 'Internal server error', error })
@@ -186,5 +187,5 @@ module.exports = {
     getProductsByCategoryController,
     getProductsBySubCategoryController,
     bulkProductsUploadController
-    
+
 }
