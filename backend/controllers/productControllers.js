@@ -1,7 +1,8 @@
 const { nanoid } = require("nanoid");
 const slugify = require("slugify")
-const Product = require('../models/productModel')
 const { readSheet } = require('read-excel-file/node')
+const writeExcelFile = require('write-excel-file/node')
+const Product = require('../models/productModel')
 
 
 // product controller start
@@ -178,9 +179,11 @@ const bulkProductsUploadController = async (req, res) => {
     }
 }
 
-const bulkProductsDownloadController = async () => {
+const bulkProductsDownloadController = async (req,res) => {
     try {
-        
+        const data = await Product.find()
+        const filewrite = await writeExcelFile(data,{}).toFile('./files/products.xlsx')
+        return res.send(filewrite)
     } catch (error) {
         return res.status(500).json({ status: false, message: 'Internal server error' , error})
     }
