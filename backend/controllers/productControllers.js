@@ -1,5 +1,6 @@
 const Product = require('../models/productModel')
 const { readSheet } = require('read-excel-file/node')
+const crypto = require("crypto");
 
 // product controller start
 const createProductController = async (req, res) => {
@@ -25,7 +26,8 @@ const createProductController = async (req, res) => {
         if (isExistbySlug) {
             return res.status(400).json({ success: false, message: 'Product already exist with this slug' })
         }
-        const sku = `LM-${Date.now()}`
+        const uniqueNumber = crypto.randomInt(1000000000, 10000000000);
+        const sku = `LM-${uniqueNumber}`
         const isExistbySku = await Product.findOne({ sku })
         if (isExistbySku) {
             return res.status(400).json({ success: false, message: 'Product already exist with this sku' })
@@ -36,7 +38,7 @@ const createProductController = async (req, res) => {
                 isMain: mainImageIndex == index
             }
         })
-        const product = new Product({ title, stock, description, shortDescription, price, discountPrice, category, subCategory, owner, images, slug })
+        const product = new Product({ title, stock, description, shortDescription, price, discountPrice, category, subCategory, owner, images, slug, sku })
         await product.save()
         return res.status(201).json({ success: true, message: 'Product created successfully', data: product })
     } catch (error) {
@@ -162,7 +164,9 @@ const bulkProductsUploadController = async (req, res) => {
                 },
                 category: '6ac778fbf3ff58f47acc815d',
                 subCategory: '6ac77b31f3ff58f47acc8160',
-                owner: '6ac206a8ce41c4c41fea9867'
+                owner: '6ac206a8ce41c4c41fea9867',
+                sku: product.sku || `LM-${crypto.randomInt(1000000000, 10000000000)}`,
+                slug: product.slug || 
             }
         ))
         const data = await Product.insertMany(products)
@@ -182,4 +186,5 @@ module.exports = {
     getProductsByCategoryController,
     getProductsBySubCategoryController,
     bulkProductsUploadController
+    
 }
