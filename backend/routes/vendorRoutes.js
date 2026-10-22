@@ -35,5 +35,6 @@ router.get('/products/category/:categoryId', getProductsByCategoryController)
 router.get('/products/subcategory/:subcategoryId', getProductsBySubCategoryController)
 router.delete('/products/:id', deleteProductsController)
 router.post('/products/bulk', upload.single('file'),bulkProductsUploadController)
+router.post('/products/bulk', bulkProductsUploadController)
 
 module.exports = router

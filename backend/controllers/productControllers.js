@@ -155,7 +155,7 @@ const schema = {
 const bulkProductsUploadController = async (req, res) => {
     try {
         if (!req.file) {
-            return res.status(400).json({success: false, message: 'Please select product file'})
+            return res.status(400).json({ success: false, message: 'Please select product file' })
         }
         const { objects, errors } = await readSheet(req.file.path, { schema })
         const products = objects.map((product) => (
@@ -178,6 +178,14 @@ const bulkProductsUploadController = async (req, res) => {
     }
 }
 
+const bulkProductsDownloadController = async () => {
+    try {
+        
+    } catch (error) {
+        return res.status(500).json({ status: false, message: 'Internal server error' , error})
+    }
+}
+
 module.exports = {
     createProductController,
     getAllProductsController,
@@ -186,6 +194,6 @@ module.exports = {
     deleteProductsController,
     getProductsByCategoryController,
     getProductsBySubCategoryController,
-    bulkProductsUploadController
-
+    bulkProductsUploadController,
+    bulkProductsDownloadController
 }
