@@ -16,7 +16,7 @@ const createProductController = async (req, res) => {
             discountPrice = 0,
             category,
             subCategory,
-            mainImageIndex = 0,
+            isMain = 0,
             owner,
             stock
         } = req.body
@@ -37,14 +37,14 @@ const createProductController = async (req, res) => {
         const images = req.files.map((file, index) => {
             return {
                 url: file.path,
-                isMain: mainImageIndex == index
+                isMain: isMain == index
             }
         })
         const product = new Product({ title, stock, description, shortDescription, price, discountPrice, category, subCategory, owner, images, slug, sku })
         await product.save()
         return res.status(201).json({ success: true, message: 'Product created successfully', data: product })
     } catch (error) {
-        return res.status(500).json({ status: false, message: 'Internal server error' })
+        return res.status(500).json({ status: false, message: 'Internal server error', error })
     }
 }
 
@@ -290,10 +290,33 @@ const columns = [
 const bulkProductsDownloadController = async (req, res) => {
     try {
         const data = await Product.find().lean()
-        
+
         await writeExcelFile(data, { columns }).toFile('./files/products.xlsx')
 
         res.status(200).json({ success: true, message: 'Product download successfully' })
+    } catch (error) {
+        return res.status(500).json({ status: false, message: 'Internal server error' })
+    }
+}
+
+const singleProductUpdateController = async (req, res) => {
+    try {
+        const { id } = req.params
+        const existingProduct = await Product.findById(id)
+        const data = await Product.findByIdAndUpdate(id, req.body)
+        if (req.body?.isMain) {
+            existingProduct.images.map((image, index) => {
+                req.body?.isMain == index ? image.isMain = true : image.isMain = false
+            })
+        }
+        if (req.body?.deleteIndex) {
+            if (existingProduct.images[req.body?.deleteIndex].isMain) {
+                existingProduct.images[0].isMain = true
+            }
+            existingProduct.images.splice(req.body?.deleteIndex, 1)
+        }
+        await existingProduct.save()
+        return res.status(200).json({ success: true, message: 'Product updated', data })
     } catch (error) {
         console.log(error)
         return res.status(500).json({ status: false, message: 'Internal server error', error })
@@ -309,5 +332,6 @@ module.exports = {
     getProductsByCategoryController,
     getProductsBySubCategoryController,
     bulkProductsUploadController,
-    bulkProductsDownloadController
+    bulkProductsDownloadController,
+    singleProductUpdateController
 }

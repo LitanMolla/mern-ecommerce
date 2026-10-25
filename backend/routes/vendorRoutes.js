@@ -15,7 +15,8 @@ const { createProductController, getAllProductsController,
     getProductsBySubCategoryController,
     getProductsByCategoryController, 
     bulkProductsUploadController,
-bulkProductsDownloadController
+bulkProductsDownloadController,
+singleProductUpdateController
 } = require('../controllers/productControllers')
 
 const router = express.Router()
@@ -38,5 +39,6 @@ router.get('/products/subcategory/:subcategoryId', getProductsBySubCategoryContr
 router.delete('/products/:id', deleteProductsController)
 router.post('/products/bulk', upload.single('file'),bulkProductsUploadController)
 router.post('/products/bulk/save', bulkProductsDownloadController)
+router.post('/products/update/:id',upload.array('images'), singleProductUpdateController)
 
 module.exports = router
