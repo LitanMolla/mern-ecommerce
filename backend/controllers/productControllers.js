@@ -291,8 +291,8 @@ const bulkProductsDownloadController = async (req, res) => {
     try {
         const data = await Product.find().lean()
 
-        await writeExcelFile(data, { columns }).toFile('./files/products.xlsx')
-
+        await writeExcelFile(data, { columns }).toFile(`./files/products-${Date.now()}.xlsx`)
+        
         res.status(200).json({ success: true, message: 'Product download successfully' })
     } catch (error) {
         return res.status(500).json({ status: false, message: 'Internal server error' })
