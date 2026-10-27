@@ -165,9 +165,9 @@ const bulkProductsUploadController = async (req, res) => {
                 images: {
                     url: product.images
                 },
-                category: '6ac778fbf3ff58f47acc815d',
-                subCategory: '6ac77b31f3ff58f47acc8160',
-                owner: '6ac206a8ce41c4c41fea9867',
+                category: product?.category || '6ac778fbf3ff58f47acc815d',
+                subCategory: product?.subCategory || '6ac77b31f3ff58f47acc8160',
+                owner: product?.owner || '6ac206a8ce41c4c41fea9867',
                 sku: product.sku || `LM-${nanoid(10)}`,
                 slug: product.slug || slugify(product.title, { lower: true, strict: true, trim: true })
             }
@@ -292,7 +292,7 @@ const bulkProductsDownloadController = async (req, res) => {
         const data = await Product.find().lean()
 
         await writeExcelFile(data, { columns }).toFile(`./files/products-${Date.now()}.xlsx`)
-        
+
         res.status(200).json({ success: true, message: 'Product download successfully' })
     } catch (error) {
         return res.status(500).json({ status: false, message: 'Internal server error' })
@@ -301,9 +301,12 @@ const bulkProductsDownloadController = async (req, res) => {
 
 const singleProductUpdateController = async (req, res) => {
     try {
+        if (req.body?.sku || req.body?.slug) {
+            return res.status(400).json({ status: false, message: 'Slug or sku update not allowed' })
+        } 
+
         const { id } = req.params
         const existingProduct = await Product.findById(id)
-        const data = await Product.findByIdAndUpdate(id, req.body)
         if (req.body?.isMain) {
             existingProduct.images.map((image, index) => {
                 req.body?.isMain == index ? image.isMain = true : image.isMain = false
@@ -315,6 +318,7 @@ const singleProductUpdateController = async (req, res) => {
             }
             existingProduct.images.splice(req.body?.deleteIndex, 1)
         }
+        const data = await Product.findByIdAndUpdate(id, req.body, {returnDocument: 'after'})
         await existingProduct.save()
         return res.status(200).json({ success: true, message: 'Product updated', data })
     } catch (error) {
