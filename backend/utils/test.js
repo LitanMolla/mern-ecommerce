@@ -73,6 +73,12 @@ const products = [
 
 const deletedIndex = [1,2,8]
 
-const remaining = products.filter((product,index)=>!deletedIndex.includes(index))
+const remaining = []
 
-console.log(remaining.length);
+products.map((product,index)=>{
+  if (!deletedIndex.includes(index)) {
+    remaining.push(product)
+  }
+})
+
+console.log(remaining);

@@ -303,7 +303,7 @@ const singleProductUpdateController = async (req, res) => {
     try {
         if (req.body?.sku || req.body?.slug) {
             return res.status(400).json({ status: false, message: 'Slug or sku update not allowed' })
-        } 
+        }
 
         const { id } = req.params
         const existingProduct = await Product.findById(id)
@@ -313,12 +313,33 @@ const singleProductUpdateController = async (req, res) => {
             })
         }
         if (req.body?.deleteIndex) {
-            if (existingProduct.images[req.body?.deleteIndex].isMain) {
-                existingProduct.images[0].isMain = true
-            }
-            existingProduct.images.splice(req.body?.deleteIndex, 1)
+            const remainingImages = []
+            // if (existingProduct.images[req.body?.deleteIndex]?.isMain) {
+            //     existingProduct.images[0].isMain = true
+            // }
+            // existingProduct.images.splice(req.body?.deleteIndex, 1)
+
+            existingProduct.images.map((product, i) => {
+                if (existingProduct.images[i]?.isMain) {
+                    existingProduct.images[0].isMain = true
+                    // console.log(product)
+                }
+            })
+            existingProduct.images.map((product, i) => {
+                if (!req.body?.deleteIndex.includes(i)) {
+                    remainingImages.push(product)
+                }
+            })
+            existingProduct.images = remainingImages
         }
-        const data = await Product.findByIdAndUpdate(id, req.body, {returnDocument: 'after'})
+        if (req?.files) {
+            const images = [...existingProduct.images]
+            req.files.map((image) => {
+                images.push({ url: image.path, isMain: false })
+            })
+            existingProduct.images = images
+        }
+        const data = await Product.findByIdAndUpdate(id, req.body, { returnDocument: 'after' })
         await existingProduct.save()
         return res.status(200).json({ success: true, message: 'Product updated', data })
     } catch (error) {
