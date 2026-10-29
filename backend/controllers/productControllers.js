@@ -173,7 +173,6 @@ const singleProductUpdateController = async (req, res) => {
         }
 
         if (Array.isArray(req.body?.deleteIndex)) {
-            const remainingImages = []
             // if (existingProduct.images[req.body?.deleteIndex]?.isMain) {
             //     existingProduct.images[0].isMain = true
             // }
@@ -184,6 +183,7 @@ const singleProductUpdateController = async (req, res) => {
             //         existingProduct.images[0].isMain = true
             //     }
             // })
+            const remainingImages = []
             existingProduct.images.map((product, i) => {
                 if (!req.body?.deleteIndex.includes(i)) {
                     remainingImages.push(product)
