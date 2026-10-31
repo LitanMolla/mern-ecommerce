@@ -9,7 +9,8 @@ const {
     updateCategory,
     categoryDeleteController,
     getAllCategories,
-    categoryStatusUpdateController
+    categoryStatusUpdateController,
+    productStatusUpdateController
 } = require('../controllers/adminControllers')
 const { getAllCategoriesByOwner } = require('../controllers/vendorController')
 
@@ -378,5 +379,7 @@ router.post('/delete-category/:id', categoryDeleteController)
 router.get('/user/:id/category', getAllCategoriesByOwner)
 
 router.post('/category/status/update/:id', categoryStatusUpdateController)
+
+router.post('/product/status/update/:id', productStatusUpdateController)
 
 module.exports = router

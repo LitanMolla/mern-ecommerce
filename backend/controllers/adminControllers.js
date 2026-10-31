@@ -1,5 +1,6 @@
 const User = require('../models/userModel')
 const Category = require('../models/categoryModel')
+const Product = require('../models/productModel')
 const userUpdateController = async (req, res) => {
     try {
         const { id } = req.params
@@ -144,6 +145,19 @@ const categoryStatusUpdateController = async (req, res) => {
         return res.status(500).json({ status: false, message: 'Internal server error' })
     }
 }
+const productStatusUpdateController = async (req, res) => {
+    try {
+        const { id } = req.params
+        const { status } = req.body
+        const data = await Product.findByIdAndUpdate(id, { status }, { returnDocument: 'after', runValidators: true })
+        if (!data) {
+            return res.status(404).json({ status: false, message: 'Product not found' })
+        }
+        return res.status(200).json({ success: true, message: 'Product updated successfully', data })
+    } catch (error) {
+        return res.status(500).json({ status: false, message: 'Internal server error' , error})
+    }
+}
 
 module.exports = {
     userUpdateController,
@@ -155,5 +169,6 @@ module.exports = {
     updateCategory,
     categoryDeleteController,
     getAllCategories,
-    categoryStatusUpdateController
+    categoryStatusUpdateController,
+    productStatusUpdateController
 }
