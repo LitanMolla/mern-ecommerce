@@ -131,6 +131,20 @@ const getAllCategories = async (req, res) => {
     }
 }
 
+const categoryStatusUpdateController = async (req, res) => {
+    try {
+        const { id } = req.params
+        const { status } = req.body
+        const data = await Category.findByIdAndUpdate(id, { status }, { returnDocument: 'after', runValidators: true })
+        if (!data) {
+            return res.status(404).json({ status: false, message: 'Category not found' })
+        }
+        return res.status(200).json({ success: true, message: 'Category updated successfully', data })
+    } catch (error) {
+        return res.status(500).json({ status: false, message: 'Internal server error' })
+    }
+}
+
 module.exports = {
     userUpdateController,
     getAllUsersController,
@@ -140,5 +154,6 @@ module.exports = {
     deleteUserController,
     updateCategory,
     categoryDeleteController,
-    getAllCategories
+    getAllCategories,
+    categoryStatusUpdateController
 }
