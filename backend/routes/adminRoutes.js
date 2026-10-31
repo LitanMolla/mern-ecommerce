@@ -376,10 +376,118 @@ router.post('/update-category/:id', updateCategory)
  */
 router.post('/delete-category/:id', categoryDeleteController)
 
+/**
+ * @swagger
+ * /api/v1/admin/user/{id}/category:
+ *   get:
+ *     summary: Get all categories by owner
+ *     tags:
+ *       - Category
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Owner user MongoDB ObjectId
+ *         example: 65a1b2c3d4e5f67890123456
+ *     responses:
+ *       200:
+ *         description: Categories fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: categories found wise owner
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       400:
+ *         description: Invalid Object ID
+ *       500:
+ *         description: Internal server error
+ */
 router.get('/user/:id/category', getAllCategoriesByOwner)
 
+/**
+ * @swagger
+ * /api/v1/admin/category/status/update/{id}:
+ *   post:
+ *     summary: Update category status
+ *     tags:
+ *       - Category
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Category MongoDB ObjectId
+ *         example: 65a1b2c3d4e5f67890123456
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - status
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 example: active
+ *     responses:
+ *       200:
+ *         description: Category status updated successfully
+ *       404:
+ *         description: Category not found
+ *       500:
+ *         description: Internal server error
+ */
 router.post('/category/status/update/:id', categoryStatusUpdateController)
 
+/**
+ * @swagger
+ * /api/v1/admin/product/status/update/{id}:
+ *   post:
+ *     summary: Update product status
+ *     tags:
+ *       - Product
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Product MongoDB ObjectId
+ *         example: 65a1b2c3d4e5f67890123456
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - status
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 example: active
+ *     responses:
+ *       200:
+ *         description: Product status updated successfully
+ *       404:
+ *         description: Product not found
+ *       500:
+ *         description: Internal server error
+ */
 router.post('/product/status/update/:id', productStatusUpdateController)
 
 module.exports = router
