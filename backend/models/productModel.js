@@ -25,10 +25,11 @@ const productSchema = new Schema({
     },
     price: {
         type: Number,
-        required: true
+        required: true,
+        min: 0
     },
     discountPrice: {
-        type: Number
+        type: Number,
     },
     stock: {
         type: Number,
@@ -65,6 +66,6 @@ const productSchema = new Schema({
         enum: ['pending', 'approved', 'rejected'],
         default: 'pending'
     },
-}, { timestamps: true, skipVersioning: true })
+}, { timestamps: true})
 
 module.exports = mongoose.model('Product', productSchema)
