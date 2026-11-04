@@ -23,6 +23,6 @@ app.use('/api/v1/vendor', vendorMiddleware, vendorRoutes)
 app.use('/api/v1/admin', adminMiddleware, adminRoutes)
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 const PORT = process.env.PORT || 8000
-dbConnection()
+await dbConnection()
 
 app.listen(PORT, () => { console.log(`Server is running on port: ${PORT}`) })

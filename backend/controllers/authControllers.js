@@ -9,7 +9,7 @@ const generateAccessToken = require('../utils/generateAccessToken');
 const registerController = async (req, res) => {
     try {
         const { email, password, confirmPassword, terms, fullName } = req.body
-        if (!email || !password || !terms) {
+        if (!email || !password || terms !== true) {
             return res.status(400).json({ success: false, message: 'Please fill in all required fields.' })
         }
         if (!emailRegex.test(email)) {
@@ -25,6 +25,11 @@ const registerController = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Passwords do not match.' })
         }
 
+        const isExist = await User.findOne({ email })
+        if (isExist) {
+            return res.status(400).json({ success: false, message: 'Account already exist with this email' })
+        }
+
         const hashPassword = bcrypt.hashSync(password, 10)
 
         const user = new User({ email, terms, fullName, password: hashPassword })
@@ -35,7 +40,7 @@ const registerController = async (req, res) => {
 
         return res.status(201).json({ success: true, message: 'Register success.' })
     } catch (error) {
-        return res.status(500).json({ success: false, message: error.message })
+        return res.status(500).json({ success: false, message: 'Internal server error' })
     }
 }
 
@@ -56,7 +61,7 @@ const loginController = async (req, res) => {
         const token = generateAccessToken(user)
         return res.status(200).json({ success: true, message: 'Login success.', data: { _id: user._id, fullName: user.fullName, email: user.email, role: user.role }, accessToken: token })
     } catch (error) {
-        return res.status(500).json({ success: false, message: error.message })
+        return res.status(500).json({ success: false, message: 'Internal server error' })
     }
 }
 
@@ -72,7 +77,7 @@ const verifyAccountController = async (req, res) => {
             return res.status(404).json({ success: false, message: 'User not found.' })
         }
         if (user.isVerified) {
-            return res.status(400).json({ success: false, message: 'Account already verifed.' })
+            return res.status(400).json({ success: false, message: 'Account already verified.' })
         }
         user.isVerified = true
         await user.save()
@@ -111,6 +116,19 @@ const resetPasswordController = async (req, res) => {
         if (password !== confirmPassword) {
             return res.status(400).json({ success: false, message: 'Password not matched.' })
         }
+        if (password.length < 8) {
+            return res.status(400).json({
+                success: false,
+                message: 'Password must be at least 8 characters long.'
+            })
+        }
+
+        if (!passwordRegex.test(password)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Password must contain at least one letter and one number.'
+            })
+        }
         if (!token) {
             return res.status(404).json({ success: false, message: 'Token not found.' })
         }
@@ -120,7 +138,7 @@ const resetPasswordController = async (req, res) => {
             return res.status(404).json({ success: false, message: 'User not found.' })
         }
         const hashPassword = bcrypt.hashSync(password, 10)
-        const updateUser = await User.findByIdAndUpdate(decode._id, { password: hashPassword }, { new: true }).select('-password')
+        const updateUser = await User.findByIdAndUpdate(decode._id, { password: hashPassword }, { new: true , runValidators: true})
         return res.status(200).json({ success: true, message: 'Password reset successfully', data: updateUser })
     } catch (error) {
         return res.status(400).json({ success: false, message: 'Invalid token or token expired', })
