@@ -5,7 +5,9 @@ const categorySchema = new Schema({
     name: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim: true,
+        lowercase: true
     },
     status: {
         type: String,
@@ -20,8 +22,7 @@ const categorySchema = new Schema({
     subCategory: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'SubCategory',
-            default: []
+            ref: 'SubCategory'
         }
     ]
 }, { timestamps: true })
