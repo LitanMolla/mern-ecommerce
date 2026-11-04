@@ -71,12 +71,12 @@ const verifyAccountController = async (req, res) => {
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found.' })
         }
-        if (user.isVerifed) {
+        if (user.isVerified) {
             return res.status(400).json({ success: false, message: 'Account already verifed.' })
         }
-        user.isVerifed = true
+        user.isVerified = true
         await user.save()
-        return res.status(200).json({ success: true, message: 'Account verify success.', data: { _id: user._id, fullName: user.fullName, isVerifed: user.isVerifed, email: user.email } })
+        return res.status(200).json({ success: true, message: 'Account verify success.', data: { _id: user._id, fullName: user.fullName, isVerified: user.isVerified, email: user.email } })
     } catch (error) {
         return res.status(400).json({ success: false, message: 'Invalid token or token expired' })
     }

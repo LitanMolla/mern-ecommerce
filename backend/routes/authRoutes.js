@@ -155,7 +155,7 @@ router.post('/login', loginController)
  *                     fullName:
  *                       type: string
  *                       example: Litan Molla
- *                     isVerifed:
+ *                     isVerified:
  *                       type: boolean
  *                       example: true
  *                     email:
