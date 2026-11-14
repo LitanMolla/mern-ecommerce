@@ -1,5 +1,6 @@
 const express = require('express')
 const { userUpdateController } = require('../controllers/userControllers')
+const { addtocartController, updateCartQuantityController } = require('../controllers/cartController')
 const router = express.Router()
 
 /**
@@ -39,5 +40,8 @@ const router = express.Router()
  *         description: Internal server error
  */
 router.post('/update/:id', userUpdateController)
+
+router.post('/cart/add', addtocartController)
+router.post('/cart/update/quantity/:cartId', updateCartQuantityController)
 
 module.exports = router

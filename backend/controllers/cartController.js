@@ -16,10 +16,10 @@ const addtocartController = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Insufficient product stock', availableStock: existingProduct.stock })
         }
         if (existingCart) {
-            if (existingCart.quantity+quantity >existingProduct.stock) {
+            if (existingCart.quantity + quantity > existingProduct.stock) {
                 return res.status(400).json({ success: false, message: 'Insufficient product stock', availableStock: existingProduct.stock })
             }
-            existingCart.quantity += quantity 
+            existingCart.quantity += quantity
             await existingCart.save()
             return res.status(200).json({ success: true, message: 'Quantity updated successfully', data: existingCart })
         }
@@ -27,14 +27,43 @@ const addtocartController = async (req, res) => {
         await cart.save()
         return res.status(201).json({ success: true, message: 'Added to cart successfully', data: cart })
     } catch (error) {
-        return res.status(500).json({ success: false, message: 'Internal server error' })
+        return res.status(500).json({ success: false, message: 'Internal server error', error })
     }
 }
 
-const updateCartQuantityController = async (req,res)=>{
+const updateCartQuantityController = async (req, res) => {
     try {
-        
+        const { cartId } = req.params
+        const { type } = req.body
+        const existingCart = await Cart.findById(cartId).populate('product')
+        if (!existingCart) {
+            return res.status(404).json({ success: false, message: 'Cart not found' })
+        }
+
+        if (type !== 'inc' && type !== 'dec') {
+            return res.status(400).json({success: false,message: 'Invalid type. Use inc or dec'})}
+
+        if (type === 'dec') {
+            if (existingCart.quantity <= 1) {
+                await Cart.findByIdAndDelete(cartId)
+                return res.status(200).json({success: true,message: 'Cart item removed successfully'})
+            }
+            existingCart.quantity -= 1
+        }
+
+        if (type === 'inc') {
+            if (existingCart.quantity + 1 > existingCart.product.stock) {
+                return res.status(400).json({success: false,message: 'Insufficient product stock', availableStock: existingCart.product.stock})
+            }
+            existingCart.quantity += 1
+        }
+
+        await existingCart.save()
+
+        return res.status(200).json({ success: true, message: 'Cart quantity updated successfully', data: existingCart })
     } catch (error) {
         return res.status(500).json({ success: false, message: 'Internal server error' })
     }
 }
+
+module.exports = { updateCartQuantityController, addtocartController }
