@@ -28,6 +28,10 @@ const productSchema = new Schema({
         required: true,
         min: 0
     },
+    discountType: {
+        type: String,
+        enum: ["percent", "fixed"]
+    },
     discountPrice: {
         type: Number,
     },
@@ -66,6 +70,6 @@ const productSchema = new Schema({
         enum: ['pending', 'approved', 'rejected'],
         default: 'pending'
     },
-}, { timestamps: true})
+}, { timestamps: true })
 
 module.exports = mongoose.model('Product', productSchema)
